@@ -34,6 +34,7 @@ function populateSettings(response) {
         var rendered = Mustache.render(template, { name: itemsList[i], key: "node" + i })
         $('#checkboxes').append(rendered)
     }
+    $('.node-checkbox').change(onCheckboxChange);
 }
 
 // Get the nodes from the response
@@ -96,12 +97,42 @@ function constructGraph(response, freqs) {
     })
 }
 
-// Callback when a checkbox is clicked
-function onCheckboxClick(element, name) {
-    if (!element.checked) { // Remove node
-        var removed = cy.$('#' + name).remove()
-        hidden[name] = removed
-    } else {
-        cy.add(hidden[name])
+// Callback when a checkbox changes
+function onCheckboxChange() {
+    var checked = $(this).is(':checked')
+    var key = $(this).data('key')
+    if (!checked) { // Remove node
+        var removed = cy.$('#' + key).remove()
+        hidden[key] = removed
+    } else { // Add node
+        var removed = hidden[key]
+        var edges = removed.filter('edge')
+        cy.add(removed.filter('node'))
+        console.log('currently at node ' + key)
+        for (var i = 0; i < edges.length; i++) {
+            var edge = edges[i]
+            var otherNode = (key == edge.source().id()) ? edge.target().id() : edge.source().id()
+            if (cy.$('#' + otherNode).length > 0) {
+                // If the other node is present
+                cy.add(edge)
+            } else {
+                // If the other node is removed, add this edge there
+                console.log('other node ' + otherNode + ' not found, adding ' + edge.id() + ' to it.')
+                console.log(hidden[otherNode].length)
+                hidden[otherNode].add(edge)
+                console.log(hidden[otherNode].length)
+            }
+        }
     }
+}
+
+// Callback when the toggle all button is clickeds
+function onCheckAllClick() {
+    var allChecked = true;
+    $('.node-checkbox').each(function() {
+        allChecked = allChecked && this.checked
+    })
+    $('.node-checkbox').each(function() {
+        if (allChecked == this.checked) this.click()
+    })
 }

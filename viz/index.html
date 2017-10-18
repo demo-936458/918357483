@@ -25,7 +25,7 @@
             <div id="title">
                 <h3>Product Network Analysis</h3>
             </div>
-            <h4 id="weights-title"><span class="badge badge-primary">Weights</span></h4>
+            <h6 id="weights-title">Weights</h6>
             <div>
                 <label class="custom-control custom-radio">
                     <input id="radio1" name="radio" type="radio" class="custom-control-input" checked>
@@ -38,14 +38,15 @@
                     <span class="custom-control-description">Raw count</span>
                 </label>
             </div>
-            <h4 id="nodes-title"><span class="badge badge-primary">Nodes</span></h4>
+            <h6 id="nodes-title">Nodes </h6>
+            <a href="#" class="small" onclick="onCheckAllClick()">(toggle all)</a>
         </div>
     </div>
     <div id="canvas"></div>
     <script id="checkbox-template" type="x-tmpl-mustache">
         <div>
             <label class="custom-control custom-checkbox text-capitalize">
-                <input type="checkbox" class="custom-control-input" onclick='onCheckboxClick(this, "{{ key }}")'; checked>
+                <input type="checkbox" class="custom-control-input node-checkbox" data-key='{{ key }}' checked>
                 <span class="custom-control-indicator"></span>
                 <span class="custom-control-description">{{ name }}</span>
             </label>
