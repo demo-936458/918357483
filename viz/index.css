@@ -6,15 +6,16 @@ body {
 #right {
     background-color: #f8f9fa;
     border: 1px #eee;
-    border-style: none none none solid;
-    float: right;
+    border-style: none solid none none;
+    float: left;
     height: 100%;
     width: 300px;
 }
 
 #canvas {
     height: 100%;
-    margin-right: 300px;
+    margin-left: 300px;
+    background-color: black;
 }
 
 #logo {

@@ -3,8 +3,10 @@ var hidden = {}
 
 Zepto(function($) {
     $.get('network.json', function(response) {
-        populateSettings(response)
-        constructGraph(response)
+        $.get('freqs.json', function(freqs) {
+            populateSettings(response)
+            constructGraph(response, freqs)
+        })
     })
 })
 
@@ -35,12 +37,17 @@ function populateSettings(response) {
 }
 
 // Get the nodes from the response
-function getNodes(response) {
+function getNodes(response, freqs) {
     var nodes = []
     var itemsList = createItemsList(response)
     for (var i = 0; i < itemsList.length; i++) {
         nodes.push({
-            data: { id: "node" + i, name: itemsList[i] }
+            data: {
+                id: "node" + i,
+                name: itemsList[i],
+                weight: 300 * getOrderFreq(freqs, itemsList[i])
+            },
+            classes: getOrderType(itemsList[i])
         })
     }
     return nodes
@@ -67,8 +74,8 @@ function getEdges(response) {
 }
 
 // Construct the graph
-function constructGraph(response) {
-    var nodes = getNodes(response)
+function constructGraph(response, freqs) {
+    var nodes = getNodes(response, freqs)
     var edges = getEdges(response)
     cy = cytoscape({
         container: $('#canvas'),
@@ -76,7 +83,17 @@ function constructGraph(response) {
         style: graphStyle,
         layout: graphLayout
     });
-
+    cy.on("tap", function(evt) {
+        if ((evt.target === cy) || evt.target.isEdge()) { // Background or Edge tap
+            cy.$('edge').removeClass('focused')
+            cy.$('edge').removeClass('notfocused')
+        } else if (evt.target.isNode()) { // Node tap
+            cy.$('edge').removeClass('focused')
+            cy.$('edge').addClass('notfocused')
+            evt.target.connectedEdges().removeClass('notfocused')
+            evt.target.connectedEdges().addClass('focused')
+        }
+    })
 }
 
 // Callback when a checkbox is clicked

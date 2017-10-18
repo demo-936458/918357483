@@ -1,28 +1,68 @@
 var graphStyle = [{
         selector: 'node',
         style: {
+            'color': '#fff',
             'font-size': 5,
-            'width': 7,
-            'height': 7,
-            'background-color': '#666',
-            'label': 'data(name)'
+            'width': 'data(weight)',
+            'height': 'data(weight)',
+            'background-color': '#aaa',
+            'label': 'data(name)',
+        }
+    },
+    {
+        selector: 'node.drink',
+        style: {
+            'background-color': '#ef4631'
+        }
+    },
+    {
+        selector: 'node.alacarte',
+        style: {
+            'background-color': '#ef4631'
+        }
+    },
+    {
+        selector: 'node.combo',
+        style: {
+            'background-color': '#f7bb09'
         }
     },
     {
         selector: 'edge',
         style: {
+            'label': 'data(label)',
             'width': 'data(weight)',
-            'line-color': '#ccc',
-            'target-arrow-color': '#ccc',
-            'opacity': 0.4
+            'line-color': '#555',
+            'target-arrow-color': '#555',
+            'opacity': 0.5
         }
     },
     {
         selector: 'node:selected',
         style: {
-            'background-color': '#ef4631'
+            'font-size': 8,
+            'font-weight': 'bold',
+            'color': '#fff',
+            'text-background-color': '#000',
+            'text-background-opacity': 0.8,
+            'text-background-shape': 'roundrectangle',
+            'text-background-padding': '2px',
+            'z-index': 1000
         }
-    }
+    },
+    {
+        selector: '.focused',
+        style: {
+            'line-color': '#ef4631',
+            'opacity': 0.8
+        }
+    },
+    {
+        selector: '.notfocused',
+        style: {
+            'opacity': 0.1
+        }
+    },
 ]
 
 var graphLayout = {
