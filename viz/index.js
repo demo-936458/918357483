@@ -1,3 +1,6 @@
+var cy;
+var hidden = {}
+
 Zepto(function($) {
     $.get('network.json', function(response) {
         populateSettings(response)
@@ -26,7 +29,7 @@ function populateSettings(response) {
     var template = $('#checkbox-template').html();
     Mustache.parse(template);
     for (var i = 0; i < itemsList.length; i++) {
-        var rendered = Mustache.render(template, { name: itemsList[i] })
+        var rendered = Mustache.render(template, { name: itemsList[i], key: "node" + i })
         $('#checkboxes').append(rendered)
     }
 }
@@ -37,7 +40,7 @@ function getNodes(response) {
     var itemsList = createItemsList(response)
     for (var i = 0; i < itemsList.length; i++) {
         nodes.push({
-            data: { id: itemsList[i] }
+            data: { id: "node" + i, name: itemsList[i] }
         })
     }
     return nodes
@@ -45,14 +48,17 @@ function getNodes(response) {
 
 // Get the edges from the response
 function getEdges(response) {
+    var itemsList = createItemsList(response)
     var edges = []
     for (var i = 0; i < response.length; i++) {
         var edge = response[i]
+        var node1 = itemsList.indexOf(edge.item1)
+        var node2 = itemsList.indexOf(edge.item2)
         edges.push({
             data: {
-                id: edge.item1 + '-' + edge.item2,
-                source: edge.item1,
-                target: edge.item2,
+                id: "edge" + node1 + '-' + node2,
+                source: "node" + node1,
+                target: "node" + node2,
                 weight: edge.weight / 50
             }
         })
@@ -64,7 +70,7 @@ function getEdges(response) {
 function constructGraph(response) {
     var nodes = getNodes(response)
     var edges = getEdges(response)
-    var cy = cytoscape({
+    cy = cytoscape({
         container: $('#canvas'),
         elements: nodes.concat(edges),
         style: [{
@@ -74,7 +80,7 @@ function constructGraph(response) {
                     'width': 7,
                     'height': 7,
                     'background-color': '#666',
-                    'label': 'data(id)'
+                    'label': 'data(name)'
                 }
             },
             {
@@ -103,8 +109,15 @@ function constructGraph(response) {
             },
         }
     });
+
 }
 
+// Callback when a checkbox is clicked
 function onCheckboxClick(element, name) {
-    alert(name)
+    if (!element.checked) { // Remove node
+        var removed = cy.$('#' + name).remove()
+        hidden[name] = removed
+    } else {
+        cy.add(hidden[name])
+    }
 }
