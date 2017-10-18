@@ -1,5 +1,4 @@
 var cy;
-var hidden = {}
 
 Zepto(function($) {
     $.get('network.json', function(response) {
@@ -101,28 +100,11 @@ function constructGraph(response, freqs) {
 function onCheckboxChange() {
     var checked = $(this).is(':checked')
     var key = $(this).data('key')
-    if (!checked) { // Remove node
-        var removed = cy.$('#' + key).remove()
-        hidden[key] = removed
-    } else { // Add node
-        var removed = hidden[key]
-        var edges = removed.filter('edge')
-        cy.add(removed.filter('node'))
-        console.log('currently at node ' + key)
-        for (var i = 0; i < edges.length; i++) {
-            var edge = edges[i]
-            var otherNode = (key == edge.source().id()) ? edge.target().id() : edge.source().id()
-            if (cy.$('#' + otherNode).length > 0) {
-                // If the other node is present
-                cy.add(edge)
-            } else {
-                // If the other node is removed, add this edge there
-                console.log('other node ' + otherNode + ' not found, adding ' + edge.id() + ' to it.')
-                console.log(hidden[otherNode].length)
-                hidden[otherNode].add(edge)
-                console.log(hidden[otherNode].length)
-            }
-        }
+    var node = cy.$('#' + key)
+    if (!checked) { // Hide node
+        node.addClass('gone')
+    } else { // Show node
+        node.removeClass('gone')
     }
 }
 
