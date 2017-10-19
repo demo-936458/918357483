@@ -11,6 +11,8 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.4/cytoscape.min.js"></script>
+    <script src="dataset-meta.js"></script>
+    <script src="cyto-config.js"></script>
     <script src="index.js"></script>
 </head>
 
@@ -43,7 +45,7 @@
     <script id="checkbox-template" type="x-tmpl-mustache">
         <div>
             <label class="custom-control custom-checkbox text-capitalize">
-                <input type="checkbox" class="custom-control-input" onclick='onCheckboxClick(this, "{{ name }}")'; checked>
+                <input type="checkbox" class="custom-control-input" onclick='onCheckboxClick(this, "{{ key }}")'; checked>
                 <span class="custom-control-indicator"></span>
                 <span class="custom-control-description">{{ name }}</span>
             </label>

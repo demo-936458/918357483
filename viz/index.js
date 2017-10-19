@@ -1,7 +1,12 @@
+var cy;
+var hidden = {}
+
 Zepto(function($) {
     $.get('network.json', function(response) {
-        populateSettings(response)
-        constructGraph(response)
+        $.get('freqs.json', function(freqs) {
+            populateSettings(response)
+            constructGraph(response, freqs)
+        })
     })
 })
 
@@ -26,18 +31,23 @@ function populateSettings(response) {
     var template = $('#checkbox-template').html();
     Mustache.parse(template);
     for (var i = 0; i < itemsList.length; i++) {
-        var rendered = Mustache.render(template, { name: itemsList[i] })
+        var rendered = Mustache.render(template, { name: itemsList[i], key: "node" + i })
         $('#checkboxes').append(rendered)
     }
 }
 
 // Get the nodes from the response
-function getNodes(response) {
+function getNodes(response, freqs) {
     var nodes = []
     var itemsList = createItemsList(response)
     for (var i = 0; i < itemsList.length; i++) {
         nodes.push({
-            data: { id: itemsList[i] }
+            data: {
+                id: "node" + i,
+                name: itemsList[i],
+                weight: 300 * getOrderFreq(freqs, itemsList[i])
+            },
+            classes: getOrderType(itemsList[i])
         })
     }
     return nodes
@@ -45,14 +55,17 @@ function getNodes(response) {
 
 // Get the edges from the response
 function getEdges(response) {
+    var itemsList = createItemsList(response)
     var edges = []
     for (var i = 0; i < response.length; i++) {
         var edge = response[i]
+        var node1 = itemsList.indexOf(edge.item1)
+        var node2 = itemsList.indexOf(edge.item2)
         edges.push({
             data: {
-                id: edge.item1 + '-' + edge.item2,
-                source: edge.item1,
-                target: edge.item2,
+                id: "edge" + node1 + '-' + node2,
+                source: "node" + node1,
+                target: "node" + node2,
                 weight: edge.weight / 50
             }
         })
@@ -61,50 +74,34 @@ function getEdges(response) {
 }
 
 // Construct the graph
-function constructGraph(response) {
-    var nodes = getNodes(response)
+function constructGraph(response, freqs) {
+    var nodes = getNodes(response, freqs)
     var edges = getEdges(response)
-    var cy = cytoscape({
+    cy = cytoscape({
         container: $('#canvas'),
         elements: nodes.concat(edges),
-        style: [{
-                selector: 'node',
-                style: {
-                    'font-size': 5,
-                    'width': 7,
-                    'height': 7,
-                    'background-color': '#666',
-                    'label': 'data(id)'
-                }
-            },
-            {
-                selector: 'edge',
-                style: {
-                    'width': 'data(weight)',
-                    'line-color': '#ccc',
-                    'target-arrow-color': '#ccc',
-                    'opacity': 0.4
-                }
-            }
-        ],
-        layout: {
-            name: 'cose',
-            gravity: 1,
-            nodeRepulsion: 400000,
-            idealEdgeLength: function(edge) {
-                // Default is: 10
-                // Instead, base it on "weight"
-                return edge.data().weight * 100
-            },
-            edgeElasticity: function(edge) {
-                // Default is: 100
-                // Instead, base it on "weight"
-                return edge.data().weight * 100
-            },
-        }
+        style: graphStyle,
+        layout: graphLayout
     });
+    cy.on("tap", function(evt) {
+        if ((evt.target === cy) || evt.target.isEdge()) { // Background or Edge tap
+            cy.$('edge').removeClass('focused')
+            cy.$('edge').removeClass('notfocused')
+        } else if (evt.target.isNode()) { // Node tap
+            cy.$('edge').removeClass('focused')
+            cy.$('edge').addClass('notfocused')
+            evt.target.connectedEdges().removeClass('notfocused')
+            evt.target.connectedEdges().addClass('focused')
+        }
+    })
 }
 
+// Callback when a checkbox is clicked
 function onCheckboxClick(element, name) {
-    alert(name)
+    if (!element.checked) { // Remove node
+        var removed = cy.$('#' + name).remove()
+        hidden[name] = removed
+    } else {
+        cy.add(hidden[name])
+    }
 }
