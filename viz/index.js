@@ -60,7 +60,7 @@ function getNodes(response, freqs) {
             data: {
                 id: "node" + i,
                 name: itemsList[i],
-                weight: 300 * getOrderFreq(freqs, itemsList[i])
+                weight: 100 * getOrderFreq(freqs, itemsList[i])
             },
             classes: getOrderType(itemsList[i])
         })

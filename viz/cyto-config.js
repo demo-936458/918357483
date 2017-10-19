@@ -82,8 +82,8 @@ var graphStyle = [{
 
 var graphLayout = {
     name: 'cose',
-    gravity: 1,
-    nodeRepulsion: 40000,
+    gravity: 0.001,
+    nodeRepulsion: 1000000,
     idealEdgeLength: function(edge) {
         // Default is: 10
         // Instead, base it on "weight"
@@ -92,6 +92,6 @@ var graphLayout = {
     edgeElasticity: function(edge) {
         // Default is: 100
         // Instead, base it on "weight"
-        return edge.data().weight * 100
+        return edge.data().weight * 140
     },
 }
