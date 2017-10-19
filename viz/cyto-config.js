@@ -77,6 +77,12 @@ var graphStyle = [{
         style: {
             'display': 'none'
         }
+    },
+    {
+        selector: '.below-threshold',
+        style: {
+            'display': 'none'
+        }
     }
 ]
 

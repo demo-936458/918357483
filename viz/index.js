@@ -22,6 +22,16 @@ function initSlider() {
             return 'Current value: ' + value;
         }
     });
+    slider.on("slide", function(sliderValue) {
+        $("#slider-value").text(sliderValue)
+        cy.$('edge').forEach(function(edge) {
+            if (edge.data('weight') >= sliderValue) {
+                edge.removeClass('below-threshold')
+            } else {
+                edge.addClass('below-threshold')
+            }
+        })
+    });
 }
 
 // Create items list from response
@@ -76,7 +86,6 @@ function getEdges(response) {
         var edge = response[i]
         var node1 = itemsList.indexOf(edge.item1)
         var node2 = itemsList.indexOf(edge.item2)
-        console.log((edge.norm_weight / 100000).round(2))
         edges.push({
             data: {
                 id: "edge" + node1 + '-' + node2,
