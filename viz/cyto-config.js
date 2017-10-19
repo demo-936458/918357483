@@ -63,6 +63,12 @@ var graphStyle = [{
             'opacity': 0.1
         }
     },
+    {
+        selector: '.gone',
+        style: {
+            'display': 'none'
+        }
+    }
 ]
 
 var graphLayout = {

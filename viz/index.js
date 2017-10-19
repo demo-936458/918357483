@@ -1,5 +1,4 @@
 var cy;
-var hidden = {}
 
 Zepto(function($) {
     $.get('network.json', function(response) {
@@ -34,6 +33,7 @@ function populateSettings(response) {
         var rendered = Mustache.render(template, { name: itemsList[i], key: "node" + i })
         $('#checkboxes').append(rendered)
     }
+    $('.node-checkbox').change(onCheckboxChange);
 }
 
 // Get the nodes from the response
@@ -96,12 +96,25 @@ function constructGraph(response, freqs) {
     })
 }
 
-// Callback when a checkbox is clicked
-function onCheckboxClick(element, name) {
-    if (!element.checked) { // Remove node
-        var removed = cy.$('#' + name).remove()
-        hidden[name] = removed
-    } else {
-        cy.add(hidden[name])
+// Callback when a checkbox changes
+function onCheckboxChange() {
+    var checked = $(this).is(':checked')
+    var key = $(this).data('key')
+    var node = cy.$('#' + key)
+    if (!checked) { // Hide node
+        node.addClass('gone')
+    } else { // Show node
+        node.removeClass('gone')
     }
+}
+
+// Callback when the toggle all button is clickeds
+function onCheckAllClick() {
+    var allChecked = true;
+    $('.node-checkbox').each(function() {
+        allChecked = allChecked && this.checked
+    })
+    $('.node-checkbox').each(function() {
+        if (allChecked == this.checked) this.click()
+    })
 }
