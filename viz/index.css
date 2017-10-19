@@ -39,7 +39,6 @@ body {
 }
 
 #nodes-title {
-    margin-top: 10px;
     margin-left: -5px;
     display: inline;
 }
@@ -55,4 +54,25 @@ body {
     border-style: none none solid none;
     padding: 5px;
     text-align: center;
+}
+
+#ex1Slider {
+    width: 180px;
+}
+
+#edge-slider {
+    margin-bottom: 20px;
+}
+
+#ex1Slider .slider-selection {
+    background: #157ffc;
+}
+
+#ex1Slider .slider-handle {
+    background: #444;
+}
+
+#slider-value {
+    color: #444;
+    float: right;
 }

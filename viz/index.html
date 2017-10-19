@@ -7,6 +7,8 @@
     <title>Jollibee Orders Network</title>
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/css/bootstrap-slider.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.9.0/bootstrap-slider.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
@@ -25,18 +27,10 @@
             <div id="title">
                 <h3>Product Network Analysis</h3>
             </div>
-            <h6 id="weights-title">Weights</h6>
-            <div>
-                <label class="custom-control custom-radio">
-                    <input id="radio1" name="radio" type="radio" class="custom-control-input" checked>
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Normalized</span>
-                </label>
-                <label class="custom-control custom-radio">
-                    <input id="radio2" name="radio" type="radio" class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Raw count</span>
-                </label>
+            <div id="edge-slider">
+                <h6 id="weights-title">Edge Threshold</h6>
+                <span id="slider-value">10000</span>
+                <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="14" />
             </div>
             <h6 id="nodes-title">Nodes </h6>
             <a href="#" class="small" onclick="onCheckAllClick()">(toggle all)</a>

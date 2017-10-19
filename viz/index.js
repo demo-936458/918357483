@@ -1,5 +1,10 @@
 var cy;
 
+// Util function to round
+Number.prototype.round = function(places) {
+    return +(Math.round(this + "e+" + places) + "e-" + places);
+}
+
 Zepto(function($) {
     $.get('network.json', function(response) {
         $.get('freqs.json', function(freqs) {
@@ -7,7 +12,17 @@ Zepto(function($) {
             constructGraph(response, freqs)
         })
     })
+    initSlider()
 })
+
+// Initialize the slider
+function initSlider() {
+    var slider = new Slider('#ex1', {
+        formatter: function(value) {
+            return 'Current value: ' + value;
+        }
+    });
+}
 
 // Create items list from response
 function createItemsList(response) {
@@ -61,12 +76,13 @@ function getEdges(response) {
         var edge = response[i]
         var node1 = itemsList.indexOf(edge.item1)
         var node2 = itemsList.indexOf(edge.item2)
+        console.log((edge.norm_weight / 100000).round(2))
         edges.push({
             data: {
                 id: "edge" + node1 + '-' + node2,
                 source: "node" + node1,
                 target: "node" + node2,
-                weight: edge.weight / 50
+                weight: (edge.norm_weight / 100000).round(2),
             }
         })
     }
