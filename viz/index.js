@@ -82,7 +82,7 @@ function getEdges(response) {
                 id: "edge" + node1 + '-' + node2,
                 source: "node" + node1,
                 target: "node" + node2,
-                weight: (edge.norm_weight / 100000).round(2),
+                weight: (Math.pow(edge.norm_weight / 100000, 0.7)).round(2),
             }
         })
     }
