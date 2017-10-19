@@ -18,7 +18,7 @@ var graphStyle = [{
     {
         selector: 'node.alacarte',
         style: {
-            'background-color': '#ef4631'
+            'background-color': '#f7bb09'
         }
     },
     {
@@ -30,7 +30,6 @@ var graphStyle = [{
     {
         selector: 'edge',
         style: {
-            'label': 'data(label)',
             'width': 'data(weight)',
             'line-color': '#555',
             'target-arrow-color': '#555',
@@ -58,6 +57,16 @@ var graphStyle = [{
         }
     },
     {
+        selector: 'edge.focused',
+        style: {
+            'label': 'data(weight)',
+            'font-size': 4,
+            'color': '#fff',
+            'text-opacity': 1,
+            'z-index': 1000
+        }
+    },
+    {
         selector: '.notfocused',
         style: {
             'opacity': 0.1
@@ -74,7 +83,7 @@ var graphStyle = [{
 var graphLayout = {
     name: 'cose',
     gravity: 1,
-    nodeRepulsion: 400000,
+    nodeRepulsion: 40000,
     idealEdgeLength: function(edge) {
         // Default is: 10
         // Instead, base it on "weight"
