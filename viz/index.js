@@ -127,7 +127,7 @@ function animateLayout() {
     for (var i = 0; i < nodes.length; i++) {
         var nodeId = cy.$('node')[i].id()
         cy.$('node')[i].animate({
-            renderedPosition: presetPos[nodeId],
+            position: presetPos[nodeId],
             duration: 1000,
             easing: 'ease-in-out-quart'
         })
