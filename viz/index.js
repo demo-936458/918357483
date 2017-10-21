@@ -1,4 +1,5 @@
 var cy;
+var cosePositions;
 
 // Util function to round
 Number.prototype.round = function(places) {
@@ -72,7 +73,7 @@ function getNodes(response, freqs) {
                 name: itemsList[i],
                 weight: 100 * getOrderFreq(freqs, itemsList[i])
             },
-            classes: getOrderType(itemsList[i])
+            classes: getOrderType(itemsList[i]) + ' precompute'
         })
     }
     return nodes
@@ -92,7 +93,8 @@ function getEdges(response) {
                 source: "node" + node1,
                 target: "node" + node2,
                 weight: (Math.pow(edge.norm_weight / 100000, 0.7)).round(2),
-            }
+            },
+            classes: 'precompute'
         })
     }
     return edges
@@ -106,7 +108,7 @@ function constructGraph(response, freqs) {
         container: $('#canvas'),
         elements: nodes.concat(edges),
         style: graphStyle,
-        layout: graphLayout
+        layout: createInitialLayout(onInitialLayout)
     });
     cy.on("tap", function(evt) {
         if ((evt.target === cy) || evt.target.isEdge()) { // Background or Edge tap
@@ -121,6 +123,37 @@ function constructGraph(response, freqs) {
     })
 }
 
+// Callback when the initial layout finishes
+function onInitialLayout() {
+    cosePositions = {}
+    var nodes = cy.$('node')
+    for (var i = 0; i < nodes.length; i++) {
+        var pos = cy.$('node')[i].renderedPosition()
+        cosePositions[i] = { x: pos.x, y: pos.y }
+    }
+    cy.layout({
+        name: 'grid',
+        boundingBox: cy.extent(),
+    }).run()
+    cy.$().removeClass('precompute')
+}
+
+// Starts the animation to the cose layout
+function animateCose() {
+    console.log('animate')
+    var nodes = cy.$('node')
+    for (var i = 0; i < nodes.length; i++) {
+        cy.$('node')[i].animate({
+            renderedPosition: cosePositions[i],
+            duration: 1000,
+            complete: function() {
+                console.log('complete ' + i)
+            },
+            easing: 'ease-in-out-quart'
+        })
+    }
+}
+
 // Callback when a checkbox changes
 function onCheckboxChange() {
     var checked = $(this).is(':checked')
@@ -133,7 +166,7 @@ function onCheckboxChange() {
     }
 }
 
-// Callback when the toggle all button is clickeds
+// Callback when the toggle all button is clicked
 function onCheckAllClick() {
     var allChecked = true;
     $('.node-checkbox').each(function() {
@@ -142,4 +175,9 @@ function onCheckAllClick() {
     $('.node-checkbox').each(function() {
         if (allChecked == this.checked) this.click()
     })
+}
+
+// Callback when the cluster button is clicked
+function onClusterClick() {
+    animateCose()
 }
