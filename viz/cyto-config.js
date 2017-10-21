@@ -6,7 +6,7 @@ var graphStyle = [{
             'width': 'data(weight)',
             'height': 'data(weight)',
             'background-color': '#aaa',
-            'label': 'data(name)',
+            'label': 'data(name)'
         }
     },
     {
@@ -83,21 +83,35 @@ var graphStyle = [{
         style: {
             'display': 'none'
         }
+    },
+    {
+        selector: '.precompute',
+        style: {
+            opacity: 0
+        }
     }
 ]
 
-var graphLayout = {
-    name: 'cose',
-    gravity: 0.001,
-    nodeRepulsion: 1000000,
-    idealEdgeLength: function(edge) {
-        // Default is: 10
-        // Instead, base it on "weight"
-        return edge.data().weight * 100
-    },
-    edgeElasticity: function(edge) {
-        // Default is: 100
-        // Instead, base it on "weight"
-        return edge.data().weight * 140
-    },
+var randomLayout = {
+    name: 'random'
+}
+
+// Initial layout of the network
+function createInitialLayout(callback) {
+    return {
+        name: 'cose',
+        gravity: 0.001,
+        nodeRepulsion: 1000000,
+        idealEdgeLength: function(edge) {
+            // Default is: 10
+            // Instead, base it on "weight"
+            return edge.data().weight * 100
+        },
+        edgeElasticity: function(edge) {
+            // Default is: 100
+            // Instead, base it on "weight"
+            return edge.data().weight * 140
+        },
+        stop: callback
+    }
 }
